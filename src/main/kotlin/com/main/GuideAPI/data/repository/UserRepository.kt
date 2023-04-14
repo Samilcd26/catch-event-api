@@ -9,5 +9,5 @@ import java.util.Optional
 @EnableJpaRepositories
 @Repository
 interface UserRepository :JpaRepository<UserModel,Long>{
-    fun findByEmail(email:String):Optional<UserModel>
+    fun findByEmail(Email:String):Optional<UserModel>
 }

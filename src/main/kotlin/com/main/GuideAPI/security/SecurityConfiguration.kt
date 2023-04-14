@@ -26,7 +26,8 @@ class SecurityConfiguration(
     @Autowired
             private val logoutHandler: LogoutHandler
 ) {
-
+//.requestMatchers(new AntPathRequestMatcher("/public/**")).permitAll()
+//            .anyRequest().authenticated()) //other URLs are only allowed authenticated users.
 
     @Bean
     @Throws(Exception::class)
@@ -35,8 +36,8 @@ class SecurityConfiguration(
             .csrf()
             .disable()
             .authorizeHttpRequests()
-            .antMatchers("/api/admin/**").hasRole("ADMIN")
-            .antMatchers("/api/user/**").hasRole("USER")
+            .antMatchers("/api/v1/auth/**").permitAll()
+            //.antMatchers("/api/user/**").hasRole("USER")
             .anyRequest().authenticated()
             .and()
 

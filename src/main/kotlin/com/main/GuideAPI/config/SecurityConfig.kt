@@ -2,6 +2,7 @@ package com.main.GuideAPI.config
 
 import com.main.GuideAPI.data.repository.UserRepository
 import lombok.RequiredArgsConstructor
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -19,8 +20,11 @@ import org.springframework.web.filter.CorsFilter
 
 @Configuration
 @RequiredArgsConstructor
-class SecurityConfig {
-    private val repository: UserRepository? = null
+class SecurityConfig (
+    @Autowired
+    private val repository: UserRepository
+){
+
 
     @Bean
     fun userDetailsService(): UserDetailsService? {
