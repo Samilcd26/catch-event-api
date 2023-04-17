@@ -1,6 +1,7 @@
 package com.main.GuideAPI.data.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.main.GuideAPI.data.models.helperModels.generalHelper.Comment
 import com.main.GuideAPI.data.models.helperModels.userHelper.Role
 import com.main.GuideAPI.data.models.helperModels.userHelper.TicketModel
@@ -21,6 +22,9 @@ import javax.validation.constraints.Pattern
 @NoArgsConstructor
 @Entity
 data class UserModel(
+    var accessToken:String?=null,
+
+    var refreshToken:String?=null,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id:Long?=null,

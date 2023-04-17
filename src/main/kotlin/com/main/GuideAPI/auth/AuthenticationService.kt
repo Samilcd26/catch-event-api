@@ -51,7 +51,7 @@ class AuthenticationService(
         return AuthenticationResponse(accessToken = jwtToken!!, refreshToken = refreshToken!!)
     }
 
-    fun authenticate(request: AuthenticationRequest): AuthenticationResponse {
+    fun authenticate(request: AuthenticationRequest): UserModel {
 
         authenticationManager.authenticate(
             UsernamePasswordAuthenticationToken(
@@ -60,13 +60,16 @@ class AuthenticationService(
             )
         )
 
-        val user = repository!!.findByEmail(request.email!!)
+        var user = repository!!.findByEmail(request.email!!)
             .orElseThrow()
         val jwtToken = jwtService!!.generateToken(user)
         val refreshToken = jwtService.generateRefreshToken(user)
         revokeAllUserTokens(user)
         saveUserToken(user, jwtToken)
-        return AuthenticationResponse(accessToken = jwtToken!!, refreshToken = refreshToken!!)
+        user.accessToken=jwtToken!!
+        user.refreshToken=refreshToken!!
+        //AuthenticationResponse(accessToken = jwtToken!!, refreshToken = refreshToken!!)
+        return user
     }
 
     private fun saveUserToken(user: UserModel, jwtToken: String?) {

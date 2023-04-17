@@ -1,5 +1,6 @@
 package com.main.GuideAPI.auth
 
+import com.main.GuideAPI.data.models.UserModel
 import lombok.RequiredArgsConstructor
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -30,7 +31,7 @@ class AuthenticationController(
     @PostMapping("/authenticate")
     fun authenticate(
         @RequestBody request: AuthenticationRequest?
-    ): ResponseEntity<AuthenticationResponse> {
+    ): ResponseEntity<UserModel> {
         return ResponseEntity.ok(service.authenticate(request!!))
     }
 
