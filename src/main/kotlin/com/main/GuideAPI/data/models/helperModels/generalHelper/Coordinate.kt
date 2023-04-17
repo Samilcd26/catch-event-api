@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor
 import lombok.Data
 import lombok.NoArgsConstructor
 import org.hibernate.annotations.GenericGenerator
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
+import javax.persistence.*
 
 @Data
 @Entity
@@ -16,6 +13,7 @@ import javax.persistence.Id
 data class Coordinate(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable=false)
     var id:Long?=null,
     val latitude:Double? = null,
     val longitude:Double? = null

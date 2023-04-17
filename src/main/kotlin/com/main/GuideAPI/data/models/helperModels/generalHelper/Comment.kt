@@ -14,7 +14,9 @@ data class Comment(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable=false)
     var id:Long?=null,
+    @Column(nullable=false)
     var byAddId:Long?=null,
     var contents:String?=null,
     @ElementCollection

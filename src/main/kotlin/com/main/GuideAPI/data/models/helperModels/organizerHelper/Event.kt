@@ -18,7 +18,10 @@ data class Event(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable=false,name = "event_id")
     var id:Long?=null,
+
+
     var organizerId:Long?=null,
     var title:String?=null,
 

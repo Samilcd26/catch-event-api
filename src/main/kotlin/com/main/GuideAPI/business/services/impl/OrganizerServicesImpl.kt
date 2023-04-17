@@ -55,7 +55,7 @@ class OrganizerServicesImpl(
                 var selectedOrganizer: MutableList<OrganizerModel> = arrayListOf()
 
                 selectedAddress.map { s ->
-                    if (s.eventID != null) selectedEventList.add(eventRepository.findById(s.eventID!!).orElseThrow())
+                    if (s.eventId != null) selectedEventList.add(eventRepository.findById(s.eventId!!).orElseThrow())
                 }
 
                 if (filterModel.online != null) {
@@ -220,24 +220,30 @@ class OrganizerServicesImpl(
 
         try {
             event.organizerId = organizerId
-            event.address!!.map { s -> s.eventID = event.id }
+            //event.address!!.map { s -> s.eventID!!.id = event.id }
             var currentOrganizer: OrganizerModel = organizerRepository.findById(organizerId).orElseThrow()
             if (!LocalDateTime.now().isBefore(currentOrganizer.eventLimitRefreshDate)) {
                 currentOrganizer.eventLimit = 4
                 currentOrganizer.eventLimitRefreshDate = currentOrganizer.eventLimitRefreshDate?.plusMonths(1)
             }
             var temp: ArrayList<Event>? = ArrayList<Event>()
-            if (currentOrganizer.eventLimit!! > 0) {
+            if (currentOrganizer.eventLimit!! >= -6) {
 
 
                 if (currentOrganizer.event?.isNotEmpty() == true) currentOrganizer.event?.map { s -> temp?.add(s) }
 
                 currentOrganizer.eventLimit = currentOrganizer.eventLimit!! - 1
-                temp?.add(event)
 
+
+                temp?.add(event)
                 currentOrganizer.event = temp
 
-                organizerRepository.save(currentOrganizer);
+              var resultOrganizer:OrganizerModel= organizerRepository.save(currentOrganizer)
+                var length:Int=resultOrganizer.event!!.count()-1
+                var eventId: Long? =resultOrganizer!!.event!!.get(length).id
+                resultOrganizer!!.event!!.get(length).address!!.map { s->s.eventId=eventId }
+                organizerRepository.save(resultOrganizer)
+
             }
             return event
         } catch (e: Exception) {
