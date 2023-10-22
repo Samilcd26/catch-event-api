@@ -36,7 +36,8 @@ class SecurityConfiguration(
             .csrf()
             .disable()
             .authorizeHttpRequests()
-            .antMatchers("/api/v1/auth/**").permitAll()
+            .antMatchers("/api/v1/auth/**").permitAll().
+                antMatchers("/api/v1/user/create").permitAll()
             //.antMatchers("/api/user/**").hasRole("USER")
             .anyRequest().authenticated()
             .and()

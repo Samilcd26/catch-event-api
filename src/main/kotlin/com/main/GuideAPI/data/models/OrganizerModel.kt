@@ -2,6 +2,7 @@ package com.main.GuideAPI.data.models
 
 import com.main.GuideAPI.data.models.helperModels.generalHelper.Address
 import com.main.GuideAPI.data.models.helperModels.organizerHelper.Event
+import com.main.GuideAPI.data.models.helperModels.organizerHelper.OrganizerType
 import lombok.AllArgsConstructor
 import lombok.Builder
 import lombok.Data
@@ -23,6 +24,9 @@ data class OrganizerModel(
     var id:Long?=null,
     @Pattern(regexp = "\b[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}\b.")
     var email:String? = null,
+    var organizerName:String?=null,
+    @Enumerated(EnumType.ORDINAL)
+    var organizerType:OrganizerType?=null,
     var title:String? = null,
     var verify:Boolean?=false,
     var description: String? = null,

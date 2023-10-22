@@ -3,11 +3,13 @@ package com.main.GuideAPI.business.services.impl
 import com.main.GuideAPI.business.services.SSFLService
 import com.main.GuideAPI.data.models.OrganizerModel
 import com.main.GuideAPI.data.models.UserModel
+import com.main.GuideAPI.data.models.dto.UserInfoDto
 import com.main.GuideAPI.data.models.helperModels.generalHelper.Comment
 import com.main.GuideAPI.data.models.helperModels.organizerHelper.Event
 import com.main.GuideAPI.data.repository.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 
 @Service
@@ -122,7 +124,18 @@ class SSFLServiceImpl(
     }
 
     override fun addCommentToEvent(userId:Long, eventId:Long, comment: Comment): List<Long>? {
-        comment.byAddId=userId
+
+
+
+        comment.createdDate= LocalDateTime.now()
+        comment.changedDate= LocalDateTime.now()
+
+
+        var user:UserModel = userRepository.findById(userId).orElseThrow()
+
+
+        var commentUser:UserInfoDto = UserInfoDto(id = userId, userName = user.userName, imageURL = user.imageURL )
+        comment.addedUser=commentUser
         commentRepository.save(comment)
         var currentEvent:Event=eventRepository.findById(eventId).orElseThrow()
         var tempComment:ArrayList<Long> = ArrayList()

@@ -1,5 +1,6 @@
 package com.main.GuideAPI.data.models.helperModels.filterHelper
 
+import com.main.GuideAPI.data.models.EventType
 import com.main.GuideAPI.data.models.helperModels.organizerHelper.EventCategory
 import lombok.AllArgsConstructor
 import lombok.Data
@@ -13,6 +14,9 @@ import javax.persistence.Enumerated
 @NoArgsConstructor
 @Data
 data class FilterModel(
+    @Enumerated(EnumType.STRING)
+    var eventType: EventType?=null,
+
     var country:String?=null,
     var city:String?=null,
     var userId:Long?=null,

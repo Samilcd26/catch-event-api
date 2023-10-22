@@ -2,7 +2,6 @@ package com.main.GuideAPI.business.services.impl
 
 import com.main.GuideAPI.business.services.OrganizerServices
 import com.main.GuideAPI.data.models.OrganizerModel
-import com.main.GuideAPI.data.models.UserModel
 import com.main.GuideAPI.data.models.helperModels.filterHelper.FilterModel
 import com.main.GuideAPI.data.models.helperModels.generalHelper.Address
 import com.main.GuideAPI.data.models.helperModels.organizerHelper.Event
@@ -31,31 +30,33 @@ class OrganizerServicesImpl(
 ) : OrganizerServices {
 
 
-
     fun isDateInRange(startDate: LocalDate, endDate: LocalDate, dateToCheck: LocalDateTime): Boolean {
 
-        var startDateTime:LocalDateTime = startDate.atTime(0,0)
-        var endDateTime:LocalDateTime = endDate.atTime(0,0)
+        var startDateTime: LocalDateTime = startDate.atTime(0, 0)
+        var endDateTime: LocalDateTime = endDate.atTime(0, 0)
         return dateToCheck in startDateTime..endDateTime
     }
 
     fun isHourInRange(startHour: Time, endHour: Time, dateToCheck: LocalDateTime): Boolean {
-        var time:Time = Time(dateToCheck.hour,dateToCheck.minute,dateToCheck.second)
+        var time: Time = Time(dateToCheck.hour, dateToCheck.minute, dateToCheck.second)
 
         return time in startHour..endHour
     }
-    override fun getAllOrganizerByFilter(filterModel: FilterModel): List<OrganizerModel>? {
 
-
+    override fun getAllOrganizerByFilter(filterModel: FilterModel): List<Event>? {
         try {
             if (filterModel.country != null && filterModel.city != null) {
                 var selectedAddress: MutableList<Address> =
                     addressRepository.findAddressByCountryAndCity(filterModel.country!!, filterModel.city!!)
                 var selectedEventList: MutableList<Event> = arrayListOf()
-                var selectedOrganizer: MutableList<OrganizerModel> = arrayListOf()
+
 
                 selectedAddress.map { s ->
                     if (s.eventId != null) selectedEventList.add(eventRepository.findById(s.eventId!!).orElseThrow())
+                }
+                if (filterModel.eventType != null) {
+                    var temp = selectedEventList.filter { s -> s.type == filterModel.eventType }
+                    selectedEventList = temp.toMutableList()
                 }
 
                 if (filterModel.online != null) {
@@ -63,25 +64,28 @@ class OrganizerServicesImpl(
                     selectedEventList = temp.toMutableList()
                 }
 
+
+
+
                 if (filterModel.ticketNeed != null) {
                     var temp = selectedEventList.filter { s -> s.isTicketNeed == filterModel.ticketNeed }
                     selectedEventList = temp.toMutableList()
                 }
 
                 if (filterModel.verifyAccount != null) {
-                    //Bu asıl değer
-                    var tempEventList: MutableList<Event> = arrayListOf()
-                    var tempOrganizerId: MutableList<Long> = arrayListOf()
-                    var tempOrganizer: MutableList<OrganizerModel> = arrayListOf()
-                    selectedEventList.map { s ->
-                        tempOrganizer.add(
-                            organizerRepository.findById(s.organizerId!!).orElseThrow()
-                        )
-                    }.toMutableList()
-
-                    tempOrganizer.map { s -> if (s.verify == filterModel.verifyAccount) tempOrganizerId.add(s.id!!) }
-                    tempOrganizer.forEach { it -> if (tempOrganizerId.contains(it.id)) tempEventList = it.event!! }
-                    selectedEventList = tempEventList
+//                    //Bu asıl değer
+//                    var tempEventList: MutableList<Event> = arrayListOf()
+//                    var tempOrganizerId: MutableList<Long> = arrayListOf()
+//                    var tempOrganizer: MutableList<OrganizerModel> = arrayListOf()
+//                    selectedEventList.map { s ->
+//                        tempOrganizer.add(
+//                            organizerRepository.findById(s.organizerId!!).orElseThrow()
+//                        )
+//                    }.toMutableList()
+//
+//                    tempOrganizer.map { s -> if (s.verify == filterModel.verifyAccount) tempOrganizerId.add(s.id!!) }
+//                    tempOrganizer.forEach { it -> if (tempOrganizerId.contains(it.id)) tempEventList = it.event!! }
+//                    selectedEventList = tempEventList
                 }
 
 
@@ -121,37 +125,50 @@ class OrganizerServicesImpl(
 
 
                 //tarih aralığı olucak
-                if (filterModel.startDate !=null && filterModel.endDate !=null ){
-                    var temp:MutableList<Event> = arrayListOf()
-                   selectedEventList.map { s->
-                       if (isDateInRange(filterModel.startDate!!, filterModel.endDate!!,s.eventDateTime!!.first()) && isDateInRange(filterModel.startDate!!, filterModel.endDate!!,s.eventDateTime!!.last())){
-                           temp.add(s)
-                       }
-                   }
-
-                    selectedEventList=temp
-                }
-
-                // saat aralığı
-                if (filterModel.startHour !=null && filterModel.endHour !=null){
-                    var temp:MutableList<Event> = arrayListOf()
-                    selectedEventList.map { s->
-                        if (isHourInRange(filterModel.startHour!!, filterModel.startHour!!,s.eventDateTime!!.first()) && isHourInRange(filterModel.startHour!!, filterModel.startHour!!,s.eventDateTime!!.last())){
+                if (filterModel.startDate != null && filterModel.endDate != null) {
+                    var temp: MutableList<Event> = arrayListOf()
+                    selectedEventList.map { s ->
+                        if (isDateInRange(
+                                filterModel.startDate!!,
+                                filterModel.endDate!!,
+                                s.eventDateTime!!.first()
+                            ) && isDateInRange(filterModel.startDate!!, filterModel.endDate!!, s.eventDateTime!!.last())
+                        ) {
                             temp.add(s)
                         }
                     }
-                    selectedEventList=temp
+
+                    selectedEventList = temp
+                }
+
+                // saat aralığı
+                if (filterModel.startHour != null && filterModel.endHour != null) {
+                    var temp: MutableList<Event> = arrayListOf()
+                    selectedEventList.map { s ->
+                        if (isHourInRange(
+                                filterModel.startHour!!,
+                                filterModel.startHour!!,
+                                s.eventDateTime!!.first()
+                            ) && isHourInRange(
+                                filterModel.startHour!!,
+                                filterModel.startHour!!,
+                                s.eventDateTime!!.last()
+                            )
+                        ) {
+                            temp.add(s)
+                        }
+                    }
+                    selectedEventList = temp
                 }
 
                 ///Final
-                var finalOOrganizerList: MutableList<OrganizerModel> = arrayListOf()
-                selectedEventList.map { s ->
-                    finalOOrganizerList.add(
-                        organizerRepository.findById(s.organizerId!!).orElseThrow()
-                    )
-                }
+//                var finalOOrganizerList: MutableList<OrganizerModel> = arrayListOf()
+//                selectedEventList.map { s ->
+//                    var findOrg: OrganizerModel = organizerRepository.findById(s.organizerId!!).orElseThrow()
+//                    finalOOrganizerList.add(findOrg)
+//                }
 
-                return finalOOrganizerList
+                return selectedEventList
             }
 
 
@@ -164,6 +181,17 @@ class OrganizerServicesImpl(
 
     override fun getAllOrganizerById(organizerID: Long): OrganizerModel {
         return organizerRepository.findById(organizerID).orElseThrow()
+    }
+
+    override fun getOrganizerByEmail(email: String): OrganizerModel {
+        return organizerRepository.findByEmail(email)
+    }
+
+    override fun addNewAddressForOrganizer(organizerId: Long, address: Address): OrganizerModel {
+        var currentOrganizer:OrganizerModel = organizerRepository.findById(organizerId).orElseThrow()
+        currentOrganizer.address?.add(address)
+        organizerRepository.save(currentOrganizer)
+        return currentOrganizer
     }
 
 
@@ -238,10 +266,10 @@ class OrganizerServicesImpl(
                 temp?.add(event)
                 currentOrganizer.event = temp
 
-              var resultOrganizer:OrganizerModel= organizerRepository.save(currentOrganizer)
-                var length:Int=resultOrganizer.event!!.count()-1
-                var eventId: Long? =resultOrganizer!!.event!!.get(length).id
-                resultOrganizer!!.event!!.get(length).address!!.map { s->s.eventId=eventId }
+                var resultOrganizer: OrganizerModel = organizerRepository.save(currentOrganizer)
+                var length: Int = resultOrganizer.event!!.count() - 1
+                var eventId: Long? = resultOrganizer!!.event!!.get(length).id
+                resultOrganizer!!.event!!.get(length).address!!.map { s -> s.eventId = eventId }
                 organizerRepository.save(resultOrganizer)
 
             }
@@ -250,6 +278,13 @@ class OrganizerServicesImpl(
             println(e);
             return event
         }
+    }
+
+    override fun editEvent(organizerId: Long, eventId: Long, event: Event): Event {
+
+        event.id=eventId;
+        eventRepository.save(event);
+        return event;
     }
 
     override fun addAddressToEvent(eventId: Long, address: Address): Event {

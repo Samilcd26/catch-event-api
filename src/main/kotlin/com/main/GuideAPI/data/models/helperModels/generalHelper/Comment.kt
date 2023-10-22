@@ -1,5 +1,6 @@
 package com.main.GuideAPI.data.models.helperModels.generalHelper
 
+import com.main.GuideAPI.data.models.dto.UserInfoDto
 import lombok.AllArgsConstructor
 import lombok.Data
 import lombok.NoArgsConstructor
@@ -16,8 +17,9 @@ data class Comment(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable=false)
     var id:Long?=null,
-    @Column(nullable=false)
-    var byAddId:Long?=null,
+
+    @ManyToOne(cascade = [(CascadeType.ALL)] ,fetch = FetchType.LAZY)
+    var addedUser:UserInfoDto?=null,
     var contents:String?=null,
     @ElementCollection
     var likeed:MutableList<Long>?= arrayListOf(),

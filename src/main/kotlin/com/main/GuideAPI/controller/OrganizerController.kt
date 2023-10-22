@@ -19,7 +19,7 @@ class OrganizerController(
     
 
     @PostMapping("/allDataByFilter")
-    fun getAllOrganizerByCity(@RequestBody filterModel: FilterModel ):List<OrganizerModel>?{
+    fun getAllOrganizerByCity(@RequestBody filterModel: FilterModel ):List<Event>?{
         return organizerServices.getAllOrganizerByFilter(filterModel)
     }
     @GetMapping("/getDataById")
@@ -36,11 +36,21 @@ class OrganizerController(
         return ResponseEntity.ok(organizerServices.addAddressToEvent(eventId,address))
     }
 
+
+    @PostMapping("/addAddress")
+    fun addAddress(@RequestParam organizerId: Long, @RequestBody address: Address):ResponseEntity<OrganizerModel>{
+        return ResponseEntity.ok(organizerServices.addNewAddressForOrganizer(organizerId,address))
+    }
    
 
     @GetMapping("/search")
     fun searchOrganizer(@RequestParam organizerName:String):ResponseEntity<List<OrganizerModel>>{
         return ResponseEntity.ok(organizerServices.searchOrganizer(organizerName))
+    }
+
+    @GetMapping("/getOrganizerByEmail")
+    fun getOrganizerByEmail(@RequestParam email:String):ResponseEntity<OrganizerModel>{
+        return ResponseEntity.ok(organizerServices.getOrganizerByEmail(email))
     }
 /*
     @PostMapping("/addAddress")
@@ -58,8 +68,13 @@ class OrganizerController(
     fun addNewEvent(@RequestParam organizerId:Long,@RequestBody event: Event):ResponseEntity<Event>{
         return ResponseEntity.ok(organizerServices.addNewEvent(organizerId, event))
     }
-    @GetMapping("/removeEvent")
+    @DeleteMapping("/removeEvent")
     fun removeEvent(@RequestParam organizerId:Long,@RequestParam eventId: Long):ResponseEntity<Event>{
+        return ResponseEntity.ok(organizerServices.removeEvent(organizerId,eventId))
+    }
+
+    @PostMapping("/editEvent")
+    fun editEvent(@RequestParam organizerId:Long,@RequestParam eventId: Long,@RequestBody event: Event):ResponseEntity<Event>{
         return ResponseEntity.ok(organizerServices.removeEvent(organizerId,eventId))
     }
 
@@ -67,7 +82,7 @@ class OrganizerController(
     fun addNewTag(@RequestParam organizerId:Long,@RequestParam tag: String):ResponseEntity<String>{
         return ResponseEntity.ok(organizerServices.addNewTagToEvent(organizerId,tag))
     }
-    @PostMapping("/removeTag")
+    @DeleteMapping("/removeTag")
     fun removeTag(@RequestParam organizerId:Long,@RequestParam addressId:Long):ResponseEntity<String>{
         return ResponseEntity.ok(organizerServices.removeTagToEvent(organizerId,addressId))
     }

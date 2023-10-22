@@ -15,7 +15,7 @@ data class Address(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id:Long?=null,
-
+    var title:String?=null,
     var eventId:Long?=null,
     var postalCode:String? = null,
     @Column(nullable=false)

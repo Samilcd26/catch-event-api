@@ -1,5 +1,6 @@
 package com.main.GuideAPI.data.models.helperModels.organizerHelper
 
+import com.main.GuideAPI.data.models.EventType
 import com.main.GuideAPI.data.models.UserModel
 import com.main.GuideAPI.data.models.helperModels.generalHelper.Address
 import com.main.GuideAPI.data.models.helperModels.generalHelper.Comment
@@ -20,7 +21,8 @@ data class Event(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable=false,name = "event_id")
     var id:Long?=null,
-
+    @Enumerated(EnumType.ORDINAL)
+    var type:EventType?= EventType.EVENT,
 
     var organizerId:Long?=null,
     var title:String?=null,
@@ -35,15 +37,6 @@ data class Event(
     var link1:String?="",
     var link2:String?="",
     var isTicketNeed:Boolean?=false,
-/*
-    //Organizatör addreslerinden
-    @ElementCollection
-    var currentAddress: MutableList<Long> = arrayListOf(),
-
-    //Yeni Adres
-    @OneToMany(cascade = [(CascadeType.ALL)] ,fetch = FetchType.LAZY)
-    var newAddress: MutableList<Address> = arrayListOf(),
-    */
 
     @Enumerated(EnumType.STRING)
     var eventPlatform:EventPlatform?=null,
@@ -76,6 +69,15 @@ data class Event(
 
     )
 
+/*
+    //Organizatör addreslerinden
+    @ElementCollection
+    var currentAddress: MutableList<Long> = arrayListOf(),
+
+    //Yeni Adres
+    @OneToMany(cascade = [(CascadeType.ALL)] ,fetch = FetchType.LAZY)
+    var newAddress: MutableList<Address> = arrayListOf(),
+    */
 
 //Like columan name olarak kullanılınca hata veriyor.
 //@JsonFormat(pattern="dd/MM/yyyy HH:mm")

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.data.repository.query.Param
 
 import org.springframework.stereotype.Repository
+import javax.validation.constraints.Email
 
 
 @EnableJpaRepositories
@@ -20,4 +21,5 @@ interface OrganizerRepository :JpaRepository<OrganizerModel,Long>{
     @Query("select org from OrganizerModel org where org.title like :organizerName%")
     fun searchOrganizer(@Param("organizerName") organizerName: String):List<OrganizerModel>;
 
+    fun findByEmail(email: String):OrganizerModel
 }

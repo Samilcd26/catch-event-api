@@ -23,11 +23,11 @@ import javax.validation.constraints.Pattern
 @Entity
 data class UserModel(
     var accessToken:String?=null,
-
     var refreshToken:String?=null,
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id:Long?=null,
+    var userName:String?=null,
     var firstName:String?=null,
     var lastName:String?=null,
     var telNumber:Long?=null,

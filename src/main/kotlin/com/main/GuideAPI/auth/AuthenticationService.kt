@@ -36,6 +36,9 @@ class AuthenticationService(
 ) {
 
     fun register(request: RegisterRequest): AuthenticationResponse {
+
+        var isHave = repository.findByEmail(request.email!!);
+        if (!isHave.isEmpty) return AuthenticationResponse(null)
         val user: UserModel = UserModel(
             firstName = request.firstname,
             lastName = request.lastname,
